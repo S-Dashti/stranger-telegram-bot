@@ -10,4 +10,5 @@ def make_keyboard(*args, row_width=2, resize_keyboard=True):
     return markup
 
 #Add your keyboards
-main_keyboard = make_keyboard('Active', 'Setting', 'Info', 'Contact us')
+main_keyboard = make_keyboard('Connect to stranger')
+exit_keyboard = make_keyboard('Exit')
