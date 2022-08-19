@@ -1,5 +1,5 @@
-# template-telegram-bot
-This bot template could be used to run a telegram bot.
+# stranger-telegram-bot
+This bot can be used to connect two people randomly without knowing each other.
 
 ## How to run
 1. Add `src` to `PYTHONPATH` by running the following code in the main repo directory:
