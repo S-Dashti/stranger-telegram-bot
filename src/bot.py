@@ -9,8 +9,9 @@ from src.utils.keyboards import exit_keyboard, main_keyboard
 
 
 class Bot():
-    def __init__(self, bot_token):
+    def __init__(self, bot_token, db):
         self.bot = telebot.TeleBot(bot_token)
+        self.db = db
         self.handler()
 
     def run(self):
@@ -25,7 +26,7 @@ class Bot():
                 f"\nUser data: [{message.from_user.id}], [{message.from_user.username}] said:\n{message.text}\n"
                 )
 
-            db.users.update_one(
+            self.db.users.update_one(
                 {'from.id': message.from_user.id}, {'$set': message.json}, upsert=True
                 )             
             self.update_state(message.from_user.id, states.start)
@@ -37,7 +38,7 @@ class Bot():
             logger.info(
                 f"\nUser data: [{message.from_user.id}], [{message.from_user.username}] said:\n{message.text}\n"
                 )
-            user = db.users.find_one({
+            user = self.db.users.find_one({
                 'from.id': message.from_user.id
                 })                
             if user['state'] == states.connecting:
@@ -52,18 +53,18 @@ class Bot():
 
             self.update_state(message.from_user.id, states.connecting)
             self.bot.send_message(message.chat.id, f'Connecting to a stranger', reply_markup=exit_keyboard)                    
-            other_user = db.users.find_one({
+            other_user = self.db.users.find_one({
                 'state': states.connecting,
                 'from.id': {'$ne': message.from_user.id}
                 })
             if other_user:
                 self.update_state(message.from_user.id, states.connected)
                 self.update_state(other_user['from']['id'], states.connected)
-                db.users.update_one(
+                self.db.users.update_one(
                     {'from.id': message.from_user.id},
                     {'$set': {'connected_to': other_user['from']['id']}}
                 )
-                db.users.update_one(
+                self.db.users.update_one(
                     {'from.id': other_user['from']['id']},
                     {'$set': {'connected_to':  message.from_user.id}} 
                 )
@@ -79,7 +80,7 @@ class Bot():
             logger.info(
                 f"\nUser data: [{message.from_user.id}], [{message.from_user.username}] said:\n{message.text}\n"
                 )
-            user = db.users.find_one({
+            user = self.db.users.find_one({
                 'from.id': message.from_user.id
                 })
             if user['state'] == states.start: 
@@ -106,7 +107,7 @@ class Bot():
                 reply_markup=main_keyboard
                 )
 
-            db.users.update_one(
+            self.db.users.update_one(
                 {'from.id': user['connected_to']},
                 {'$set': {'connected_to':  None}}
             )
@@ -117,7 +118,7 @@ class Bot():
             logger.info(
                 f"\nUser data: [{message.from_user.id}], [{message.from_user.username}] said:\n{message.text}\n"
                 )
-            user = db.users.find_one({
+            user = self.db.users.find_one({
                 'from.id': message.from_user.id
                 })
             if user['state'] != states.connected:
@@ -133,11 +134,11 @@ class Bot():
                 )
 
     def update_state(self, user_id, state):
-        db.users.update_one(
+        self.db.users.update_one(
                 {'from.id':user_id}, {'$set': {'state': state}}, upsert=True
                 )
 
 
 if __name__ == '__main__':
-    bot = Bot(os.environ['bot_token'])
+    bot = Bot(os.environ['bot_token'], db)
     bot.run()
