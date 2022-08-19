@@ -23,7 +23,7 @@ class Bot():
         @self.bot.message_handler(commands=['start'])
         def send_welcome(message):
             logger.info(
-                f"\nUser data: [{message.from_user.id}], [{message.from_user.username}] said:\n{message.text}\n"
+                f"\nUser: [{message.from_user.id}], [{message.from_user.username}] said:\n{message.text}\n"
                 )
 
             self.db.users.update_one(
@@ -34,9 +34,9 @@ class Bot():
 
         #Replace exclusive action for each key
         @self.bot.message_handler(func=lambda m: m.text == 'Connect to stranger')	
-        def connect_key(message):
+        def key_response(message):
             logger.info(
-                f"\nUser data: [{message.from_user.id}], [{message.from_user.username}] said:\n{message.text}\n"
+                f"\nUser: [{message.from_user.id}], [{message.from_user.username}] said:\n{message.text}\n"
                 )
             user = self.db.users.find_one({
                 'from.id': message.from_user.id
@@ -76,9 +76,9 @@ class Bot():
                     )
 
         @self.bot.message_handler(func=lambda m: m.text == 'Exit')	
-        def connect_key(message):
+        def key_response(message):
             logger.info(
-                f"\nUser data: [{message.from_user.id}], [{message.from_user.username}] said:\n{message.text}\n"
+                f"\nUser: [{message.from_user.id}], [{message.from_user.username}] said:\n{message.text}\n"
                 )
             user = self.db.users.find_one({
                 'from.id': message.from_user.id
@@ -116,7 +116,7 @@ class Bot():
         @self.bot.message_handler(func=lambda m: True)
         def echo_all(message):
             logger.info(
-                f"\nUser data: [{message.from_user.id}], [{message.from_user.username}] said:\n{message.text}\n"
+                f"\nUser: [{message.from_user.id}], [{message.from_user.username}] said:\n{message.text}\n"
                 )
             user = self.db.users.find_one({
                 'from.id': message.from_user.id
