@@ -58,7 +58,8 @@ class Bot():
 
             elif user['state'] == states.start:
                 self.update_state(message.from_user.id, states.connecting)
-                self.bot.send_message(message.chat.id, f"Connecting to a stranger", reply_markup=exit_keyboard)                    
+                self.bot.send_message(message.chat.id, f"Wait for a stranger to show up and then you will be connected", 
+                reply_markup=exit_keyboard)                    
                 other_user = self.db.users.find_one({
                     'state': states.connecting,
                     'from.id': {'$ne': message.from_user.id}
