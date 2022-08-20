@@ -12,3 +12,4 @@ def make_keyboard(*args, row_width=2, resize_keyboard=True):
 #Add your keyboards
 main_keyboard = make_keyboard('Connect to stranger')
 exit_keyboard = make_keyboard('Exit')
+start_keyboard = make_keyboard('/start')
